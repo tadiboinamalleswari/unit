@@ -1,0 +1,461 @@
+# ============================================================
+# EMPLOYEE ATTRITION & WORKFORCE ANALYTICS
+# COMPLETE DATASET INSPECTION
+# ============================================================
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# ------------------------------------------------------------
+# 1. LOAD DATASET
+# ------------------------------------------------------------
+
+file_path = "WA_Fn-UseC_-HR-Employee-Attrition.csv"
+
+df = pd.read_csv(file_path)
+
+print("=" * 70)
+print("EMPLOYEE ATTRITION & WORKFORCE ANALYTICS")
+print("=" * 70)
+
+print("\nDataset loaded successfully!")
+
+
+# ------------------------------------------------------------
+# 2. FIRST 5 ROWS
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("1. FIRST 5 ROWS")
+print("=" * 70)
+
+print(df.head())
+
+
+# ------------------------------------------------------------
+# 3. LAST 5 ROWS
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("2. LAST 5 ROWS")
+print("=" * 70)
+
+print(df.tail())
+
+
+# ------------------------------------------------------------
+# 4. NUMBER OF ROWS AND COLUMNS
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("3. DATASET SIZE")
+print("=" * 70)
+
+rows, columns = df.shape
+
+print("Number of employees (rows):", rows)
+print("Number of columns:", columns)
+
+
+# ------------------------------------------------------------
+# 5. ALL COLUMN NAMES
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("4. COLUMN NAMES")
+print("=" * 70)
+
+for i, column in enumerate(df.columns, start=1):
+    print(i, ".", column)
+
+
+# ------------------------------------------------------------
+# 6. DATA TYPES
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("5. DATA TYPES")
+print("=" * 70)
+
+print(df.dtypes)
+
+
+# ------------------------------------------------------------
+# 7. DATASET INFORMATION
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("6. DATASET INFORMATION")
+print("=" * 70)
+
+df.info()
+
+
+# ------------------------------------------------------------
+# 8. MISSING VALUES
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("7. MISSING VALUES")
+print("=" * 70)
+
+missing_values = df.isnull().sum()
+
+print(missing_values)
+
+total_missing = missing_values.sum()
+
+print("\nTotal missing values in the dataset:", total_missing)
+
+
+# ------------------------------------------------------------
+# 9. DUPLICATE ROWS
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("8. DUPLICATE ROWS")
+print("=" * 70)
+
+duplicates = df.duplicated().sum()
+
+print("Number of duplicate rows:", duplicates)
+
+
+# ------------------------------------------------------------
+# 10. UNIQUE VALUES IN EACH COLUMN
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("9. UNIQUE VALUES")
+print("=" * 70)
+
+for column in df.columns:
+    print(column, ":", df[column].nunique(), "unique values")
+
+
+# ------------------------------------------------------------
+# 11. STATISTICAL SUMMARY
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("10. STATISTICAL SUMMARY")
+print("=" * 70)
+
+print(df.describe())
+
+
+# ------------------------------------------------------------
+# 12. COMPLETE SUMMARY
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("11. COMPLETE DATA SUMMARY")
+print("=" * 70)
+
+print(df.describe(include="all"))
+
+
+# ------------------------------------------------------------
+# 13. ATTRITION COUNT
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("12. EMPLOYEE ATTRITION COUNT")
+print("=" * 70)
+
+attrition_count = df["Attrition"].value_counts()
+
+print(attrition_count)
+
+
+# ------------------------------------------------------------
+# 14. ATTRITION PERCENTAGE
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("13. EMPLOYEE ATTRITION PERCENTAGE")
+print("=" * 70)
+
+attrition_percentage = df["Attrition"].value_counts(normalize=True) * 100
+
+print(attrition_percentage.round(2))
+
+
+# ------------------------------------------------------------
+# 15. CATEGORICAL VARIABLES
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("14. CATEGORICAL VARIABLES")
+print("=" * 70)
+
+categorical_columns = df.select_dtypes(include="object").columns
+
+print("Categorical columns:")
+
+for column in categorical_columns:
+    print("\n", column)
+    print(df[column].value_counts())
+
+
+# ------------------------------------------------------------
+# 16. NUMERICAL VARIABLES
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("15. NUMERICAL VARIABLES")
+print("=" * 70)
+
+numerical_columns = df.select_dtypes(include=np.number).columns
+
+print("Numerical columns:")
+
+for column in numerical_columns:
+    print(column)
+
+
+# ------------------------------------------------------------
+# 17. IMPORTANT VARIABLE SUMMARY
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("16. IMPORTANT VARIABLE SUMMARY")
+print("=" * 70)
+
+important_columns = [
+    "Age",
+    "Attrition",
+    "Department",
+    "JobRole",
+    "MonthlyIncome",
+    "OverTime",
+    "JobSatisfaction",
+    "YearsAtCompany",
+    "TotalWorkingYears",
+    "WorkLifeBalance"
+]
+
+for column in important_columns:
+
+    print("\n----------------------------------------")
+    print(column)
+    print("----------------------------------------")
+
+    print(df[column].value_counts())
+
+
+# ------------------------------------------------------------
+# 18. DATASET PROFILE TABLE
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("17. DATASET PROFILE")
+print("=" * 70)
+
+profile = pd.DataFrame({
+    "Column": df.columns,
+    "Data Type": df.dtypes.astype(str).values,
+    "Missing Values": df.isnull().sum().values,
+    "Unique Values": df.nunique().values
+})
+
+print(profile.to_string(index=False))
+
+
+# ------------------------------------------------------------
+# 19. BASIC ATTRITION STATISTICS
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("18. BASIC ATTRITION STATISTICS")
+print("=" * 70)
+
+employees_left = (df["Attrition"] == "Yes").sum()
+employees_stayed = (df["Attrition"] == "No").sum()
+
+attrition_rate = (employees_left / len(df)) * 100
+
+print("Total Employees:", len(df))
+print("Employees who left:", employees_left)
+print("Employees who stayed:", employees_stayed)
+print("Overall Attrition Rate: {:.2f}%".format(attrition_rate))
+
+
+# ------------------------------------------------------------
+# 20. ATTRITION BY DEPARTMENT
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("19. ATTRITION BY DEPARTMENT")
+print("=" * 70)
+
+department_attrition = pd.crosstab(
+    df["Department"],
+    df["Attrition"],
+    normalize="index"
+) * 100
+
+print(department_attrition.round(2))
+
+
+# ------------------------------------------------------------
+# 21. ATTRITION BY JOB ROLE
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("20. ATTRITION BY JOB ROLE")
+print("=" * 70)
+
+jobrole_attrition = pd.crosstab(
+    df["JobRole"],
+    df["Attrition"],
+    normalize="index"
+) * 100
+
+print(jobrole_attrition.round(2))
+
+
+# ------------------------------------------------------------
+# 22. ATTRITION BY OVERTIME
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("21. ATTRITION BY OVERTIME")
+print("=" * 70)
+
+overtime_attrition = pd.crosstab(
+    df["OverTime"],
+    df["Attrition"],
+    normalize="index"
+) * 100
+
+print(overtime_attrition.round(2))
+
+
+# ------------------------------------------------------------
+# 23. AVERAGE SALARY BY ATTRITION
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("22. AVERAGE MONTHLY INCOME BY ATTRITION")
+print("=" * 70)
+
+salary_analysis = df.groupby("Attrition")["MonthlyIncome"].agg(
+    ["count", "mean", "median", "min", "max"]
+)
+
+print(salary_analysis.round(2))
+
+
+# ------------------------------------------------------------
+# 24. AVERAGE AGE BY ATTRITION
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("23. AVERAGE AGE BY ATTRITION")
+print("=" * 70)
+
+age_analysis = df.groupby("Attrition")["Age"].agg(
+    ["count", "mean", "median", "min", "max"]
+)
+
+print(age_analysis.round(2))
+
+
+# ------------------------------------------------------------
+# 25. YEARS AT COMPANY BY ATTRITION
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("24. YEARS AT COMPANY BY ATTRITION")
+print("=" * 70)
+
+experience_analysis = df.groupby("Attrition")["YearsAtCompany"].agg(
+    ["count", "mean", "median", "min", "max"]
+)
+
+print(experience_analysis.round(2))
+
+
+# ------------------------------------------------------------
+# 26. CORRELATION MATRIX FOR NUMERICAL VARIABLES
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("25. CORRELATION MATRIX")
+print("=" * 70)
+
+correlation_matrix = df[numerical_columns].corr()
+
+print(correlation_matrix.round(2))
+
+
+# ------------------------------------------------------------
+# 27. ATTRITION BAR CHART
+# ------------------------------------------------------------
+
+plt.figure(figsize=(7, 5))
+
+df["Attrition"].value_counts().plot(kind="bar")
+
+plt.title("Employee Attrition")
+plt.xlabel("Attrition")
+plt.ylabel("Number of Employees")
+plt.xticks(rotation=0)
+
+plt.tight_layout()
+plt.show()
+
+
+# ------------------------------------------------------------
+# 28. DEPARTMENT ATTRITION CHART
+# ------------------------------------------------------------
+
+department_counts = pd.crosstab(
+    df["Department"],
+    df["Attrition"]
+)
+
+department_counts.plot(kind="bar", figsize=(9, 5))
+
+plt.title("Employee Attrition by Department")
+plt.xlabel("Department")
+plt.ylabel("Number of Employees")
+plt.xticks(rotation=0)
+
+plt.tight_layout()
+plt.show()
+
+
+# ------------------------------------------------------------
+# 29. OVERTIME VS ATTRITION
+# ------------------------------------------------------------
+
+overtime_counts = pd.crosstab(
+    df["OverTime"],
+    df["Attrition"]
+)
+
+overtime_counts.plot(kind="bar", figsize=(7, 5))
+
+plt.title("Overtime vs Employee Attrition")
+plt.xlabel("Overtime")
+plt.ylabel("Number of Employees")
+plt.xticks(rotation=0)
+
+plt.tight_layout()
+plt.show()
+
+
+# ------------------------------------------------------------
+# 30. FINAL MESSAGE
+# ------------------------------------------------------------
+
+print("\n" + "=" * 70)
+print("DATASET INSPECTION COMPLETED SUCCESSFULLY!")
+print("=" * 70)
+
+print("\nNext step:")
+print("We will perform Exploratory Data Analysis (EDA).")
+print("We will identify the major factors associated with employee attrition.")
