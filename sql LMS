@@ -1,0 +1,51 @@
+-- ============================================
+-- Library Management System - Database Schema
+-- ============================================
+
+CREATE DATABASE IF NOT EXISTS library_db;
+USE library_db;
+
+-- Table: books
+CREATE TABLE IF NOT EXISTS books (
+    book_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(150) NOT NULL,
+    author VARCHAR(100) NOT NULL,
+    genre VARCHAR(50),
+    total_copies INT NOT NULL DEFAULT 1,
+    available_copies INT NOT NULL DEFAULT 1,
+    added_on DATE DEFAULT (CURRENT_DATE)
+);
+
+-- Table: members
+CREATE TABLE IF NOT EXISTS members (
+    member_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(15),
+    joined_on DATE DEFAULT (CURRENT_DATE)
+);
+
+-- Table: transactions (issue / return records)
+CREATE TABLE IF NOT EXISTS transactions (
+    txn_id INT AUTO_INCREMENT PRIMARY KEY,
+    book_id INT NOT NULL,
+    member_id INT NOT NULL,
+    issue_date DATE NOT NULL,
+    due_date DATE NOT NULL,
+    return_date DATE DEFAULT NULL,
+    fine_amount DECIMAL(6,2) DEFAULT 0.00,
+    status ENUM('ISSUED', 'RETURNED') DEFAULT 'ISSUED',
+    FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE,
+    FOREIGN KEY (member_id) REFERENCES members(member_id) ON DELETE CASCADE
+);
+
+-- Sample data (optional - comment out if not needed)
+INSERT INTO books (title, author, genre, total_copies, available_copies) VALUES
+('The Alchemist', 'Paulo Coelho', 'Fiction', 3, 3),
+('Clean Code', 'Robert C. Martin', 'Technology', 2, 2),
+('Introduction to Algorithms', 'Cormen', 'Technology', 2, 2),
+('Wings of Fire', 'A.P.J. Abdul Kalam', 'Biography', 4, 4);
+
+INSERT INTO members (name, email, phone) VALUES
+('Ravi Kumar', 'ravi.kumar@example.com', '9876543210'),
+('Priya Sharma', 'priya.sharma@example.com', '9876500000');
